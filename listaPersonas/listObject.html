@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Implementación de una Lista</title>
+  <meta charset="utf-8"/>  
+</head>
+<body>
+  <h1>Implementación de una lista</h1>
+  Introduce nombre: <br/>
+  <input type="text" id="name" value="" placeholder="Nombre" onfocus="cleanData ()" />
+  <button id="addPerson" onclick="addPerson (document.getElementById ('name').value, document.getElementById ('surname').value);">Añade persona</button>
+  <button id="addButton" onclick="addNumber (document.getElementById ('num').value);">Añade número</button>
+  <button id="addAtButton" onclick="addNumberAtPosition (document.getElementById ('num').value, document.getElementById ('index').value);">Añade número en indice</button>
+  <button id="removeElementButton" onclick="removeByElement (document.getElementById ('num').value);">Elimina numero</button><br/>
+  Introduce apellido: <br/>
+  <input type="text" id="surname" value="" placeholder="Apellido" onfocus="cleanData ()" />
+  <button id="addPerson" onclick="addPersonAtPosition (document.getElementById ('name').value, document.getElementById ('surname').value, document.getElementById ('index').value);">Añade persona en posicion</button>
+  <button id="removeIndexButton" onclick="removeIndex (document.getElementById ('index').value);">Elimina indice</button>
+  <button id="setNumberButton" onclick="setNumber (document.getElementById ('num').value, document.getElementById ('index').value);">Cambia indice</button>
+  <br/>
+  Introduce indice: <br/>
+  <input type="text" id="index" value="" placeholder="Indice" onfocus="cleanData ()" />
+  <br/><br/>
+
+  <p id="error" style="color:red"></p> 
+  <div id="list">
+  </div>
+  <script src="BaseException.js"></script>
+  <script src="listObject.js"></script>
+</body>
+</html>
