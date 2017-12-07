@@ -12,3 +12,10 @@ function InvalidValueException(param){
 }
 InvalidValueException.prototype = new BaseException();
 InvalidValueException.prototype.constructor = InvalidValueException;
+
+function ValueIsNaNException(param){
+    this.name="ValueIsNaNException";
+    this.message = "Error: The parameter " + param + " must be a number.";
+}
+ValueIsNaNException.prototype = new InvalidValueException();
+ValueIsNaNException.prototype.constructor = ValueIsNaNException;

@@ -22,13 +22,23 @@ function FullListException(){
 FullListException.prototype = new ListException();
 FullListException.prototype.constructor = FullListException;
 
+function IndexOutOfRangeException(){
+	this.name = "IndexOutOfRangeException";
+	this.message = "Error: The Index is out of range.";
+}
+IndexOutOfRangeException.prototype = new ListException();
+IndexOutOfRangeException.prototype.constructor = IndexOutOfRangeException;
+
+function EmptyIndexException(){
+	this.name = "EmptyIndexException";
+	this.message = "Error: The index is already empty."
+}
+EmptyIndexException.prototype = new ListException();
+EmptyIndexException.prototype.constructor = EmptyIndexException;
+
 /* Page functions */
 
 var personlist = new PersonList;
-
- /*var NUMBERS_LIST = create(); function cleanData(){
- 	document.getElementById ("num").value = "" ;  
- }*/
 
 function addPerson(name, surname){
 	var error = document.getElementById ("error");
@@ -66,24 +76,24 @@ function removeIndex(index){
  	}		
 }
 
-function removeByElement(num){
+function removeByPerson(name, surname){
 	var error = document.getElementById ("error");
 	var list = document.getElementById ("list");
 	error.innerHTML = "";  
  	try {
-	 	personlist.removeElement(num);
+	 	personlist.removePerson(new Person(name, surname));
 	 	list.innerHTML = personlist.toString();
  	} catch (err) {
  		error.innerHTML = err;
  	}		
 }
 
-function setNumber(num, index){
+function setPerson(name, surname, index){
 	var error = document.getElementById ("error");
 	var list = document.getElementById ("list");
 	error.innerHTML = "";  
  	try {
-	 	personlist.set(num, index);
+	 	personlist.set(new Person(name, surname), index);
 	 	list.innerHTML = personlist.toString();
  	} catch (err) {
  		error.innerHTML = err;
@@ -122,7 +132,7 @@ function PersonList(){
 		if(!(elem instanceof Person)){
 			throw new InvalidValueException(elem);
 		}
-		if (!this.isFull(list)){
+		if (!this.isFull()){
 			list.push(elem);
 		} else {
 			throw new FullListException();
@@ -133,12 +143,12 @@ function PersonList(){
 	this.addAt = function(elem,index){
 		index = parseInt(index);
 		if (index > list.length) {
-			throw "The index is out of range";
+			throw new IndexOutOfRangeException();
 		}
 		if(!(elem instanceof Person)){
 			throw new InvalidValueException(elem);
 		}
-		if (!this.isFull(list)){
+		if (!this.isFull()){
 			list.splice(index, 0, elem);
 		} else {
 			throw FullListException();
@@ -150,15 +160,15 @@ function PersonList(){
 		index = parseInt(index);
 		var elem = 0;
 		if (isNaN(index)) {
-			throw "The index is not a number";
+			throw new ValueIsNaNException(index);
 		}
 		if (index > list.length) {
-			throw "The index is out of range";
+			throw new IndexOutOfRangeException();
 		}
-		if (!isEmpty(list)){ 			
+		if (!this.isEmpty()){ 			
 			elem = list[index];
 		} else {
-			throw "The list is empty. You can't get any element";
+			throw new EmptyListException();
 		} 	
 		return elem;
 	} 
@@ -179,124 +189,118 @@ function PersonList(){
 			throw new InvalidValueException(elem);
 		}
 		var position = -1;
-		if (!isNaN(elem)) {
-			if (!isEmpty(list)){
-				position = list.indexOf(elem);		 		
+			if (!this.isEmpty()){
+				position = list.findIndex(i => (i.name === elem.name && i.surname === elem.surname));		 		
 			} 	
-		} else{
-			throw "The element is not a number";
+		 else{
+			throw new EmptyListException();
 		}
 		return position;
 	} 
 
-	this.lastIndexOf = function(list,elem){
+	this.lastIndexOf = function(elem){
 		if(!(elem instanceof Person)){
 			throw new InvalidValueException(elem);
 		}
 		var position = -1;
-		if (!isNaN(elem)) {
 			if (!isEmpty(list)){
 				position = list.lastIndexOf(elem);		 		
 			} 	
-		} else{
-			throw "The element is not a number";
+		 else{
+			throw new EmptyListException();
 		}
 		return position;
 	} 
 
-	this.capacity = function(list){
+	this.capacity = function(){
 		return MAX_ELEM_LIST;
 	} 
 
-	this.clear = function(list){
-		var elem = Number.NaN;
-		if (!isEmpty(list)){
+	this.clear = function(){
+		if (!this.isEmpty()){
 			list.splice(0, list.length);		 		 		
 		} 	
 	} 
 
-	this.firstElement = function(list){
+	this.firstElement = function(){
 		var first;
-		if (!isEmpty(list)){
+		if (!this.isEmpty()){
 			first = list[0]; 		
 		} else {
-			throw "The list is empty.";
+			throw new EmptyListException();
 		}
 		return first;
 	} 
 
-	this.lastElement = function(list){
+	this.lastElement = function(){
 		var last;
-		if (!isEmpty(list)){
+		if (!this.isEmpty()){
 			last = list[list.length-1]; 		
 		} else {
-			throw "The list is empty.";
+			throw new EmptyListException();
 		}
 		return last;
 	} 
 
-	this.remove = function(list,index){
+	this.remove = function(index){
 		index = parseInt(index);
 		var elem;
 		if (isNaN(index)) {
-			throw "The index is not a number";
+			throw new ValueIsNaNException(index);
 		}
-		if (isEmpty(list)){
-			throw "The list is Empty. You can't remove any element in it";
+		if (this.isEmpty()){
+			throw new EmptyListException();
 		}
 		if (index > list.length) {
-			throw "The index is out of range";
+			throw new IndexOutOfRangeException();
 		}
-		else if (!isNaN(list[index])) {
+		else if (list[index] instanceof Person) {
 			elem = list[index];
 			list.splice(index, 1);
 		} else {
-			throw "The index is already empty";
+			throw new EmptyIndexException();
 		}
 		return elem;
 	}
 
 
-	this.removeElement = function(list,elem){
-		elem = parseInt(elem);
-		var elem;
-		if (isNaN(elem)) {
-			throw "The elem is not a number";
+	this.removePerson = function(elem){
+		if(!(elem instanceof Person)){
+			throw new InvalidValueException(elem);
 		}
-		if (isEmpty(list)){
-			throw "The list is Empty. You can't remove any element in it";
+		var elem;
+		if (this.isEmpty()){
+			throw new EmptyListException();
 		}
 		else {
 			var position = -1;
-			position = list.indexOf(elem);
+			position = this.indexOf(elem);
 			if(position !== -1){
-				remove(list, position);
+				this.remove(position);
 			}
 		}
 		return position;
 	}
 
-	this.set = function(list, elem, index){
-		index = parseInt(index);
-		elem = parseInt(elem);
+	this.set = function(elem, index){
+		if(!(elem instanceof Person)){
+			throw new InvalidValueException(elem);
+		}
 		var temp;
-		if (isNaN(elem)) {
-			throw "The elem is not a number";
-		}
 		if (isNaN(index)) {
-			throw "The index is not a number";
+			throw new ValueIsNaNException(index);
 		}
-		if (isEmpty(list)){
-			throw "The list is Empty. You can't set any element in it";
+		if (this.isEmpty()){
+			throw new EmptyListException();
 		}
 		if (index > list.length) {
-			throw "The index is out of range";
+			throw new IndexOutOfRangeException();
 		}
-		if (!isNaN(list[index])) {
+		if (list[index] instanceof Person) {
 			temp = list[index];
 			list[index] = elem;
 		} else {
-			throw "The index is already empty";
+			throw new EmptyIndexException();
 		}
 		return temp;
 	}
@@ -308,37 +312,37 @@ function PersonList(){
  function testlist(){
  	//var list = create (); 	
  	var list=[]; 	
- 	console.log ("Capacidad: " + capacity(list));
- 	console.log("Es vacía: " + isEmpty(list));
- 	console.log("Longitud: " + size(list));
+ 	console.log ("Capacidad: " + personlist.capacity());
+ 	console.log("Es vacía: " + personlist.isEmpty());
+ 	console.log("Longitud: " + personlist.size());
 
  	try {
-	 	for (var i=0; i<MAX_ELEM_LIST; i++){
-	 		console.log("Nº de elementos: " + add(list,i*10));
+	 	for (var i=0; i<personlist.capacity(); i++){
+	 		console.log("Nº de elementos: " + personlist.add(new Person("Persona nº",""+i*10)));
 	 	}
-	 	add(list,i); //It will generate an exception.
+	 	personlist.add(new Person("Persona","Personez")); //It will generate an exception.
  	} catch (err) {
  		console.log(err);
  	}
 
- 	console.log ("The full list: " + toString(list));	 	
- 	console.log ("The first element list: " + firstElement(list));
- 	console.log ("The last element list: " + lastElement(list));
+ 	console.log ("The full list: " + personlist.toString());	 	
+ 	console.log ("The first element list: " + personlist.firstElement());
+ 	console.log ("The last element list: " + personlist.lastElement());
 
- 	console.log ("is 40 in list: " + indexOf(list,40));	 	
- 	console.log ("is -40 in list: " + indexOf(list,-40));		 	
+ 	console.log ("is 40 in list: " + personlist.indexOf(new Person("Persona nº",""+40)));	 	
+ 	console.log ("is -40 in list: " + personlist.indexOf(new Person("Persona nº",""-40)));		 	
  	//clear(list);
 
  	try {
 	 	while (true){
-			console.log ("Unnonsumed Element: " + firstElement(list));
-			console.log ("Consumed Element: " + remove(list, 0));
-			console.log ("The list: " + toString(list));	 	 		 	
+			console.log ("Unnonsumed Element: " + personlist.firstElement());
+			console.log ("Consumed Element: " + personlist.remove(0));
+			console.log ("The list: " + personlist.toString());	 	 		 	
 	 	}
  	} catch (err) {
  		console.log(err); //When the list is empty, an exception will be catched.
  	}
 
- 	console.log ("The list: " + toString(list));	 	
+ 	console.log ("The list: " + personlist.toString());	 	
  } 
 window.onload = testlist;
