@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Implementación de una Lista Ordenada</title>
+  <meta charset="utf-8"/>  
+</head>
+<body>
+  <h1>Implementación de una lista Ordenada</h1>
+  Introduce nombre: <br/>
+  <input type="text" id="name" value="" placeholder="Nombre" />
+  <button id="addPerson" onclick="addPerson (document.getElementById ('name').value, document.getElementById ('surname').value);">Añade persona</button>
+  <button id="removeElementButton" onclick="removeByPerson (document.getElementById ('name').value, document.getElementById ('surname').value);">Elimina persona</button><br/>
+  Introduce apellido: <br/>
+  <input type="text" id="surname" value="" placeholder="Apellido" />
+  <button id="removeIndexButton" onclick="removeIndex (document.getElementById ('index').value);">Elimina indice</button><br/>
+  Introduce un indice: <br/>
+  <input type="text" id="index" value="" placeholder="Entero" onfocus="cleanData ()" />
+  <br/><br/>
+    
+
+  <p id="error" style="color:red"></p> 
+  <div id="list">
+  </div>
+  <script src="BaseException.js"></script>
+  <script src="sortedListObject.js"></script>
+  
+</body>
+</html>

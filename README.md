@@ -8,3 +8,6 @@ del cual heredaran el resto de objetos de excepción personalizados. Ambos fiche
 
 versión 1.0.1:
 Listapersona terminado.
+
+versión 1.1.0:
+Listapersona ordenada añadido y terminado.
